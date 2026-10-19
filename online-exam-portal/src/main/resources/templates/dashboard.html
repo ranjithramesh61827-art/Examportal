@@ -1,0 +1,181 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard - Online Exam Portal</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f3f6fb;
+            color: #1e293b;
+        }
+
+        header {
+            background: #243b80;
+            color: white;
+            padding: 20px 7%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        header h2 {
+            margin: 0;
+        }
+
+        .logout-button {
+            background: white;
+            color: #243b80;
+            padding: 10px 18px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+        }
+
+        main {
+            max-width: 1100px;
+            margin: 35px auto;
+            padding: 0 20px;
+        }
+
+        .welcome {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px #0000000d;
+            margin-bottom: 30px;
+        }
+
+        .welcome h1 {
+            color: #243b80;
+            margin-top: 0;
+        }
+
+        .section-title {
+            margin-bottom: 20px;
+        }
+
+        .exam-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px #0000000d;
+            max-width: 500px;
+        }
+
+        .exam-card h3 {
+            color: #243b80;
+            margin-top: 0;
+        }
+
+        .start-button {
+            display: inline-block;
+            background: #243b80;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 10px;
+            margin-right: 5px;
+        }
+
+        .start-button:hover {
+            background: #17295d;
+        }
+
+        .completed-message {
+            background: #ecfdf5;
+            color: #166534;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            line-height: 1.6;
+        }
+
+        footer {
+            text-align: center;
+            padding: 25px;
+            color: #64748b;
+        }
+
+        @media (max-width: 600px) {
+            header {
+                padding: 18px 5%;
+            }
+
+            main {
+                margin-top: 20px;
+            }
+
+            .welcome {
+                padding: 22px;
+            }
+        }
+    </style>
+
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+
+<header>
+    <h2>Online Exam Portal</h2>
+
+    <form th:action="@{/logout}" method="post">
+        <button type="submit" class="logout-button">Logout</button>
+    </form>
+</header>
+
+<main>
+
+    <section class="welcome">
+        <h1>
+            Welcome, <span th:text="${username}">Student</span>!
+        </h1>
+        <p>You have successfully logged in to the Online Exam Portal.</p>
+    </section>
+
+    <h2 class="section-title">Available Exams</h2>
+
+    <section class="exam-card">
+        <h3>Practice Examination</h3>
+
+        <p>Test your knowledge with multiple-choice questions.</p>
+        <p><strong>Question type:</strong> Multiple Choice</p>
+        <p><strong>Instructions:</strong> Read each question carefully before selecting an answer.</p>
+
+        <!-- Display Start Exam only if the student has not taken it -->
+        <div th:if="${!examTaken}">
+            <a th:href="@{/exam}" class="start-button">Start Exam</a>
+        </div>
+
+        <!-- Display completion message if the student has taken it -->
+        <div th:if="${examTaken}" class="completed-message">
+            <strong>Exam Completed!</strong>
+            <p>You have already taken the exam. Retakes are not allowed.</p>
+        </div>
+
+        <a th:href="@{/results}" class="start-button">My Results</a>
+    </section>
+
+</main>
+
+<footer>
+    Online Exam Portal &copy; 2026
+</footer>
+
+</body>
+</html>

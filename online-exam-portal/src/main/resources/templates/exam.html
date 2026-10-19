@@ -1,0 +1,333 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Exam Portal</title>
+
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f1f5f9;
+            margin: 0;
+            padding: 30px 15px;
+            color: #1e293b;
+        }
+
+        .container {
+            max-width: 850px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 14px;
+            box-shadow: 0 4px 18px #00000012;
+        }
+
+        h1 {
+            color: #243b80;
+            text-align: center;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #64748b;
+        }
+
+        .timer-box {
+            position: sticky;
+            top: 10px;
+            z-index: 10;
+            background: #eaf0ff;
+            color: #243b80;
+            padding: 15px;
+            margin: 25px 0;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .timer-warning {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .progress-track {
+            background: #e2e8f0;
+            height: 8px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 15px 0 25px;
+        }
+
+        .progress-bar {
+            width: 0;
+            height: 100%;
+            background: #3155ad;
+            transition: width 0.2s;
+        }
+
+        .question {
+            background: #f8faff;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+            border: 1px solid #dce5f2;
+        }
+
+        .question h3 {
+            color: #243b80;
+            margin-top: 0;
+        }
+
+        .option {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin: 12px 0;
+            padding: 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            cursor: pointer;
+            background: white;
+        }
+
+        .option:hover {
+            background: #eef2ff;
+            border-color: #a5b4fc;
+        }
+
+        .option input {
+            margin-top: 4px;
+        }
+
+        button {
+            background: #243b80;
+            color: white;
+            border: none;
+            padding: 13px 25px;
+            border-radius: 7px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #17295d;
+        }
+
+        button:disabled {
+            opacity: 0.65;
+            cursor: not-allowed;
+        }
+
+        .submit-area {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .result {
+            background: #e7f8ec;
+            color: #176534;
+            padding: 18px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 20px;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 18px;
+            }
+
+            .question {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+
+    <h1>Online Exam Portal</h1>
+    <p class="subtitle">
+        Answer the following multiple-choice questions.
+    </p>
+
+    <div th:if="${submitted}" class="result">
+        <h2>Exam Completed!</h2>
+        <p>
+            Your Score:
+            <strong th:text="${score}"></strong>
+            /
+            <strong th:text="${total}"></strong>
+        </p>
+    </div>
+
+    <form id="examForm"
+          th:if="${!submitted}"
+          th:action="@{/submit}"
+          method="post">
+
+        <!-- Spring Security CSRF protection -->
+        <input type="hidden"
+               th:if="${_csrf != null}"
+               th:name="${_csrf.parameterName}"
+               th:value="${_csrf.token}">
+
+        <div class="timer-box" id="timerBox">
+            Time Remaining: <span id="timer">10:00</span>
+        </div>
+
+        <p>
+            Answered:
+            <strong id="answeredCount">0</strong>
+            /
+            <strong th:text="${#lists.size(questions)}">0</strong>
+        </p>
+
+        <div class="progress-track">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+
+        <div class="question"
+             th:each="q, status : ${questions}">
+
+            <h3>
+                <span th:text="${status.count}"></span>.
+                <span th:text="${q.questionText}"></span>
+            </h3>
+
+            <label class="option">
+                <input type="radio"
+                       th:name="'question_' + ${q.id}"
+                       value="A">
+                <span th:text="${q.optionA}"></span>
+            </label>
+
+            <label class="option">
+                <input type="radio"
+                       th:name="'question_' + ${q.id}"
+                       value="B">
+                <span th:text="${q.optionB}"></span>
+            </label>
+
+            <label class="option">
+                <input type="radio"
+                       th:name="'question_' + ${q.id}"
+                       value="C">
+                <span th:text="${q.optionC}"></span>
+            </label>
+
+            <label class="option">
+                <input type="radio"
+                       th:name="'question_' + ${q.id}"
+                       value="D">
+                <span th:text="${q.optionD}"></span>
+            </label>
+
+        </div>
+
+        <div class="submit-area">
+            <button type="submit" id="submitButton">
+                Submit Exam
+            </button>
+        </div>
+    </form>
+
+    <div th:if="${submitted}" class="submit-area">
+        <a th:href="@{/}">Take Exam Again</a>
+    </div>
+
+</div>
+
+<script th:if="${!submitted}">
+    (() => {
+        const form = document.getElementById("examForm");
+        const timer = document.getElementById("timer");
+        const timerBox = document.getElementById("timerBox");
+        const submitButton = document.getElementById("submitButton");
+        const answeredCount = document.getElementById("answeredCount");
+        const progressBar = document.getElementById("progressBar");
+
+        const totalQuestions =
+            form.querySelectorAll(".question").length;
+
+        let remainingSeconds = 10 * 60;
+        let submitted = false;
+
+        function updateProgress() {
+            const answered = new Set(
+                Array.from(
+                    form.querySelectorAll(
+                        'input[type="radio"]:checked'
+                    )
+                ).map(input => input.name)
+            ).size;
+
+            answeredCount.textContent = answered;
+
+            const percentage = totalQuestions === 0
+                ? 0
+                : (answered / totalQuestions) * 100;
+
+            progressBar.style.width = percentage + "%";
+        }
+
+        form.addEventListener("change", updateProgress);
+
+        form.addEventListener("submit", () => {
+            if (submitted) return;
+            submitted = true;
+            submitButton.disabled = true;
+            submitButton.textContent = "Submitting...";
+        });
+
+        function updateTimer() {
+            const minutes = Math.floor(remainingSeconds / 60);
+            const seconds = remainingSeconds % 60;
+
+            timer.textContent =
+                String(minutes).padStart(2, "0") + ":" +
+                String(seconds).padStart(2, "0");
+
+            if (remainingSeconds <= 60) {
+                timerBox.classList.add("timer-warning");
+            }
+
+            if (remainingSeconds <= 0) {
+                if (!submitted) {
+                    submitted = true;
+                    submitButton.disabled = true;
+                    submitButton.textContent = "Time Up - Submitting...";
+                    form.requestSubmit();
+                }
+                return;
+            }
+
+            remainingSeconds--;
+        }
+
+        updateProgress();
+        updateTimer();
+
+        const interval = setInterval(() => {
+            if (submitted) {
+                clearInterval(interval);
+                return;
+            }
+
+            updateTimer();
+
+            if (remainingSeconds < 0) {
+                clearInterval(interval);
+            }
+        }, 1000);
+    })();
+</script>
+
+</body>
+</html>

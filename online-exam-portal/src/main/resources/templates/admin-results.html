@@ -1,0 +1,47 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Exam Results</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 30px; background: #f4f6f9; }
+        .container { max-width: 1000px; margin: auto; }
+        .link { display: inline-block; padding: 10px 15px; background: #2457c5; color: white; text-decoration: none; border-radius: 5px; margin-bottom: 15px; }
+        table { width: 100%; border-collapse: collapse; background: white; }
+        th, td { padding: 12px; border: 1px solid #ddd; text-align: left; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>All Student Exam Results</h1>
+
+    <a class="link" th:href="@{/admin/dashboard}">Back to Dashboard</a>
+    <a class="link" th:href="@{/admin/questions}">Manage Questions</a>
+
+    <p th:if="${#lists.isEmpty(results)}">No exam results available yet.</p>
+
+    <table th:unless="${#lists.isEmpty(results)}">
+        <thead>
+        <tr>
+            <th>Result ID</th>
+            <th>Student Username</th>
+            <th>Score</th>
+            <th>Total Questions</th>
+            <th>Submitted At</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="r : ${results}">
+            <td th:text="${r.id}"></td>
+            <td th:text="${r.username}"></td>
+            <td th:text="${r.score}"></td>
+            <td th:text="${r.totalQuestions}"></td>
+            <td th:text="${r.submittedAt}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

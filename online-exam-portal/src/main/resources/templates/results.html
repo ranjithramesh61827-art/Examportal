@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Exam Results</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f1f5f9;
+            margin: 0;
+            padding: 30px 15px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background: white;
+            padding: 28px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px #00000012;
+        }
+
+        h1 {
+            color: #243b80;
+            text-align: center;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 25px;
+        }
+
+        th, td {
+            padding: 14px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        th {
+            background: #243b80;
+            color: white;
+        }
+
+        tr:hover td {
+            background: #f8faff;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 25px;
+            color: #64748b;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 25px;
+            color: #2457c5;
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+
+    <h1>My Exam Results</h1>
+
+    <p style="text-align:center;">
+        View your previous exam attempts and scores.
+    </p>
+
+    <div th:if="${#lists.isEmpty(results)}" class="empty">
+        <h3>No exam results yet.</h3>
+        <p>Complete an exam to see your result here.</p>
+    </div>
+
+    <div th:unless="${#lists.isEmpty(results)}"
+         class="table-wrapper">
+
+        <table>
+            <thead>
+            <tr>
+                <th>Attempt ID</th>
+                <th>Score</th>
+                <th>Total Questions</th>
+                <th>Percentage</th>
+                <th>Submitted At</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <tr th:each="result : ${results}">
+                <td th:text="${result.id}"></td>
+
+                <td th:text="${result.score}"></td>
+
+                <td th:text="${result.totalQuestions}"></td>
+
+                <td>
+                    <span th:if="${result.totalQuestions > 0}"
+                          th:text="${#numbers.formatDecimal(
+                              result.score * 100.0 /
+                              result.totalQuestions, 1, 2)} + '%'">
+                    </span>
+
+                    <span th:if="${result.totalQuestions == 0}">
+                        N/A
+                    </span>
+                </td>
+
+                <td th:text="${result.submittedAt != null
+                    ? #temporals.format(
+                        result.submittedAt, 'dd-MM-yyyy HH:mm:ss')
+                    : 'Not available'}">
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+    </div>
+
+    <a class="back-link" th:href="@{/dashboard}">
+        ← Back to Dashboard
+    </a>
+
+
+</div>
+</body>
+</html>

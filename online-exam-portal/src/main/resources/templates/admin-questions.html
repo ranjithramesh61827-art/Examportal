@@ -1,0 +1,163 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Questions - Online Exam Portal</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+
+    <style>
+        .question-form {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(15, 23, 42, 0.07);
+        }
+
+        .question-form input,
+        .question-form textarea,
+        .question-form select {
+            display: block;
+            width: 100%;
+            max-width: 600px;
+            padding: 11px;
+            margin: 8px 0 16px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 15px;
+        }
+
+        .question-item {
+            background: white;
+            padding: 20px;
+            margin: 18px 0;
+            border-radius: 10px;
+            box-shadow: 0 3px 12px rgba(15, 23, 42, 0.06);
+        }
+
+        .delete-button {
+            background: #dc2626;
+            margin-top: 10px;
+        }
+
+        .delete-button:hover {
+            background: #b91c1c;
+        }
+
+        .page-links {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 25px;
+        }
+
+        .success {
+            color: #15803d;
+        }
+
+        .error {
+            color: #b91c1c;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>Manage Questions</h1>
+</header>
+
+<main>
+    <div class="page-links">
+        <a th:href="@{/admin/dashboard}">Back to Dashboard</a>
+        <a th:href="@{/admin/results}">View All Results</a>
+    </div>
+
+    <p class="success"
+       th:if="${message}"
+       th:text="${message}"></p>
+
+    <p class="error"
+       th:if="${error}"
+       th:text="${error}"></p>
+
+    <h2>Add New Question</h2>
+
+    <form class="question-form"
+          th:action="@{/admin/questions/add}"
+          method="post">
+
+        <label for="questionText">Question</label>
+        <textarea id="questionText"
+                  name="questionText"
+                  rows="3"
+                  required></textarea>
+
+        <label for="optionA">Option A</label>
+        <input id="optionA" type="text" name="optionA" required>
+
+        <label for="optionB">Option B</label>
+        <input id="optionB" type="text" name="optionB" required>
+
+        <label for="optionC">Option C</label>
+        <input id="optionC" type="text" name="optionC" required>
+
+        <label for="optionD">Option D</label>
+        <input id="optionD" type="text" name="optionD" required>
+
+        <label for="correctAnswer">Correct Answer</label>
+        <select id="correctAnswer" name="correctAnswer" required>
+            <option value="">Choose the correct option</option>
+            <option value="A">Option A</option>
+            <option value="B">Option B</option>
+            <option value="C">Option C</option>
+            <option value="D">Option D</option>
+        </select>
+
+        <button type="submit">Add Question</button>
+    </form>
+
+    <h2>Existing Questions</h2>
+
+    <p th:if="${#lists.isEmpty(questions)}">
+        No questions have been added yet.
+    </p>
+
+    <div th:each="question : ${questions}" class="question-item">
+        <h3>
+            Question
+            <span th:text="${question.id}"></span>
+        </h3>
+
+        <p th:text="${question.questionText}"></p>
+
+        <p>
+            A. <span th:text="${question.optionA}"></span>
+        </p>
+        <p>
+            B. <span th:text="${question.optionB}"></span>
+        </p>
+        <p>
+            C. <span th:text="${question.optionC}"></span>
+        </p>
+        <p>
+            D. <span th:text="${question.optionD}"></span>
+        </p>
+
+        <p>
+            Correct Answer:
+            <strong th:text="${question.correctAnswer}"></strong>
+        </p>
+
+        <form th:action="@{/admin/questions/delete}" method="post">
+            <input type="hidden" name="id" th:value="${question.id}">
+            <button type="submit" class="delete-button">
+                Delete Question
+            </button>
+        </form>
+    </div>
+</main>
+
+</body>
+</html>

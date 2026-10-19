@@ -1,0 +1,164 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Admin Dashboard - Online Exam Portal</title>
+
+    <!-- Link to the main CSS file -->
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+
+    <!-- Dashboard-specific styles -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f1f5f9;
+            margin: 0;
+            color: #1e293b;
+        }
+
+        header {
+            background: #243b80;
+            color: white;
+            padding: 22px 6%;
+        }
+
+        header h1 {
+            margin: 0;
+            color: white;
+        }
+
+        main {
+            max-width: 1050px;
+            width: 90%;
+            margin: 35px auto;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 25px 0;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px #00000010;
+        }
+
+        .card h3 {
+            color: #64748b;
+            margin-top: 0;
+            font-size: 16px;
+        }
+
+        .number {
+            font-size: 34px;
+            font-weight: bold;
+            color: #243b80;
+        }
+
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .actions a {
+            display: inline-block;
+            background: #243b80;
+            color: white;
+            text-decoration: none;
+            padding: 13px 20px;
+            border-radius: 7px;
+        }
+
+        .actions a:hover {
+            background: #17295d;
+        }
+
+        .logout-form {
+            display: inline-block;
+            margin: 0;
+        }
+
+        .logout-button {
+            background: #dc2626;
+            color: white;
+            border: none;
+            padding: 13px 20px;
+            border-radius: 7px;
+            cursor: pointer;
+            font-size: 16px;
+            font-family: Arial, sans-serif;
+        }
+
+        .logout-button:hover {
+            background: #b91c1c;
+        }
+
+        @media (max-width: 600px) {
+            main {
+                width: 92%;
+            }
+
+            header {
+                padding: 20px 4%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>Online Exam Portal - Admin Dashboard</h1>
+    <p>
+        Welcome,
+        <strong th:text="${username}">Administrator</strong>
+    </p>
+</header>
+
+<main>
+    <h2>Dashboard Overview</h2>
+
+    <div class="cards">
+        <div class="card">
+            <h3>Total Questions</h3>
+            <div class="number" th:text="${totalQuestions}">0</div>
+        </div>
+
+        <div class="card">
+            <h3>Registered Accounts</h3>
+            <div class="number" th:text="${totalUsers}">0</div>
+        </div>
+
+        <div class="card">
+            <h3>Exam Attempts</h3>
+            <div class="number" th:text="${totalAttempts}">0</div>
+        </div>
+    </div>
+
+    <h2>Management</h2>
+
+    <div class="actions">
+        <a th:href="@{/admin/questions}">Manage Questions</a>
+
+        <a th:href="@{/admin/results}">View All Results</a>
+
+        <form class="logout-form"
+              th:action="@{/logout}"
+              method="post">
+            <button class="logout-button" type="submit">Logout</button>
+        </form>
+    </div>
+</main>
+
+</body>
+</html>
